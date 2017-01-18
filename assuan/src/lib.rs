@@ -19,7 +19,7 @@ struct ARG_ENCODE_SET;
 
 impl EncodeSet for ARG_ENCODE_SET {
     fn contains(&self, byte: u8) -> bool {
-        [b'\r', b'\n', b'%'].contains(&byte)
+        [b'\r', b'\n', b'%', b' '].contains(&byte)
     }
 }
 
