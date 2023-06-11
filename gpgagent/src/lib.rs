@@ -154,7 +154,15 @@ mod tests {
 
     #[test]
     fn gpg_agent_socket() {
-        let stream = UnixStream::connect("/run/user/1000/gnupg/S.gpg-agent").unwrap();
+
+        let mut cmd = Command::new("gpg-agent")
+            .arg("--daemon")
+            .output()
+            .unwrap();
+
+        let uid = users::get_current_uid();
+        let path = format!("/run/user/{}/gnupg/S.gpg-agent", uid);
+        let stream = UnixStream::connect(path).unwrap();
         assert!(AssuanClient::new(stream.try_clone().unwrap(), stream).is_ok())
     }
 }

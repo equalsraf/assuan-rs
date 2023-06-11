@@ -11,3 +11,6 @@ libc = "0.2"
 
 [dependencies.assuan]
 path = "../assuan"
+
+[dev-dependencies]
+users = "0"
