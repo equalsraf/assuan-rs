@@ -1,0 +1,40 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+name: Test
+
+jobs:
+  test:
+    name: Test
+    env:
+      PROJECT_NAME_UNDERSCORE: rust_ci_github_actions_workflow
+      CARGO_INCREMENTAL: 0
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-dependencies
+        with:
+          path: |
+            ~/.cargo/.crates.toml
+            ~/.cargo/.crates2.json
+            ~/.cargo/bin
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            target
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('Cargo.lock') }}
+      - name: Run tests
+        run: |
+          cd gpgagent
+          cargo install cargo2junit;
+          cargo test $CARGO_OPTIONS
