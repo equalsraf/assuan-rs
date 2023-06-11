@@ -82,9 +82,9 @@ impl GpgAgent<UnixStream, UnixStream> {
     }
 
     pub fn from_path<P: AsRef<Path>>(p: P) -> Result<Self, AssuanError> {
-        let stream = try!(UnixStream::connect(p));
+        let stream = UnixStream::connect(p)?;
         Ok(GpgAgent {
-            client: try!(AssuanClient::new(stream.try_clone().unwrap(), stream))
+            client: AssuanClient::new(stream.try_clone().unwrap(), stream)?
         })
     }
 }
@@ -102,9 +102,9 @@ impl<R, W> GpgAgent<R, W> where R: Read, W: Write{
     }
 
     pub fn get_passphrase(&mut self, cache_id: &str, error_message: &str, prompt: &str, description: &str) -> Result<Vec<u8>, GpgAgentError> {
-        let pass = try!(self.client.exec("GET_PASSPHRASE",
+        let pass = self.client.exec("GET_PASSPHRASE",
                                          &[cache_id.as_bytes(), error_message.as_bytes(), prompt.as_bytes(), description.as_bytes()])
-            .map(|res| res.0));
+            .map(|res| res.0)?;
         pass.from_hex().or(Err(GpgAgentError::InvalidPassword))
     }
 
