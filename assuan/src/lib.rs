@@ -98,7 +98,7 @@ impl<R, W> AssuanClient<R, W> where R: Read, W: Write {
         };
 
         // Wait for server response
-        try!(p.wait_response());
+        p.wait_response()?;
         Ok(p)
     }
 
@@ -153,7 +153,7 @@ impl<R, W> AssuanClient<R, W> where R: Read, W: Write {
             debug!("< {}", line);
             // With the exception of the trailing NL, the output
             // should have no NL bytes (they are escaped as %0A)
-            let resp = line.trim_right_matches("\n");
+            let resp = line.trim_end_matches("\n");
 
             if resp.starts_with("OK") {
                 msg = resp[2..].to_owned();

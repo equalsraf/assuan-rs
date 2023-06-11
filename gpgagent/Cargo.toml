@@ -1,7 +1,6 @@
 [package]
 name = "gpgagent"
 version = "0.1.0"
-authors = ["raf"]
 repository = "https://github.com/equalsraf/assuan-rs"
 license = "ISC"
 
